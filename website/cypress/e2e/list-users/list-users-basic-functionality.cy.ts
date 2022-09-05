@@ -26,7 +26,7 @@ describe("Enter /list-users route with user cookie", () => {
         cy.get('[data-testid="logout-from-list-users"]').click();
         cy.wait(1000); //Wait one second before going back!
         cy.get('[data-testid="login-form-button"]').click();
-        cy.wait(1000); //Wait one second before checking cookies
+        cy.wait(1500); //Wait one and a half second before checking cookies
         cy.getCookie("user").should("exist");
         cy.getCookie("remember").should("not.exist");
         cy.wait(1000); //Wait one second before going back!

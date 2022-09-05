@@ -26,7 +26,7 @@ describe("Enter /choose-function route with user cookie", () => {
         cy.get('[data-testid="logout-from-choose-function"]').click();
         cy.wait(1000); //Wait one second before going back!
         cy.get('[data-testid="login-form-button"]').click();
-        cy.wait(1000); //Wait one second before checking cookies
+        cy.wait(1500); //Wait one and a half second before checking cookies
         cy.getCookie("user").should("exist");
         cy.getCookie("remember").should("not.exist");
     });
@@ -39,7 +39,7 @@ describe("Enter /choose-function route with user cookie", () => {
         cy.wait(1000); //Wait one second before going back!
         cy.get('[data-testid="remember-me"]').check();
         cy.get('[data-testid="login-form-button"]').click();
-        cy.wait(1000); //Wait one second before checking cookies
+        cy.wait(1500); //Wait one and a half second before checking cookies
         cy.getCookie("user").should("exist");
         cy.getCookie("remember").should("exist"); //Now that we have marked!
         cy.wait(1000); //Wait one second before going back!
@@ -57,7 +57,7 @@ describe("Enter /choose-function route with user cookie", () => {
         cy.wait(1000); //Wait one second before going back!
         cy.get('[data-testid="remember-me"]').check();
         cy.get('[data-testid="login-form-button"]').click();
-        cy.wait(1000); //Wait one second before checking cookies
+        cy.wait(1500); //Wait one and a half second before checking cookies
         cy.getCookie("user").should("exist");
         cy.getCookie("remember").should("exist"); //Now that we have marked!
         cy.wait(1000); //Wait one second before going back!

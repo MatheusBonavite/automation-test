@@ -23,6 +23,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
     const [password, setPassword] = useState("");
     const [needToAdd, setneedToAdd] = useState(false);
     const [modalOpen, setModalOpen] = useState("");
+    const [filteredUsers, setFilteredUsers] = useState(users);
 
     useEffect(() => {
         if (document) {
@@ -31,7 +32,13 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
             }
         }
     }, [router]);
-    console.log(username, password, usernameOnlyAllowedValues(username));
+
+    useEffect(() => {
+        setFilteredUsers(
+            users.filter((val: any) => val.user_name !== getCookie("user"))
+        );
+    }, [users]);
+
     return (
         <div
             className="form-wrapper"
@@ -43,7 +50,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
                 flexDirection: "column",
             }}>
             <div>
-                <UserTable users={users} />
+                <UserTable users={filteredUsers} />
             </div>
             <div>
                 <FormButton
@@ -101,7 +108,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
                     <FormButton
                         title="Add"
                         margin="0 0 0 1em"
-                        dataTestId="add-user-button"
+                        dataTestId="add-button"
                         onClick={async () => {
                             if (
                                 validateUserName(username) &&
@@ -140,7 +147,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
             </div>
             <div
                 style={{
-                    marginTop: "5em",
+                    marginTop: "3em",
                     display: `${needToAdd ? "block" : "none"}`,
                 }}>
                 <span>Rules:</span>
@@ -197,6 +204,11 @@ function expireCookie(expression: string) {
     let d = new Date();
     if (!document?.cookie?.includes(expression))
         document.cookie = `${expression}; expires=${d.toUTCString()}`;
+}
+
+function getCookie(cookieName: string) {
+    const pattern = new RegExp(`(?<=${cookieName}=).*`, "gm");
+    return document?.cookie?.match(pattern)?.[0]?.split(";")?.[0];
 }
 
 export async function getServerSideProps() {

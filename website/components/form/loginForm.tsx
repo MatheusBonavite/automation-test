@@ -206,10 +206,8 @@ function submitEvent(
                 console.log("err >>> ", err);
             });
     } else {
-        console.log("ahhh >>> ", document?.cookie);
         if (document?.cookie && document?.cookie?.includes("remember=")) {
             const name = getCookie("remember");
-            console.log("name >>> ", name);
             if (name) {
                 if (
                     !(
@@ -218,7 +216,6 @@ function submitEvent(
                         ) as HTMLInputElement
                     )?.checked
                 ) {
-                    console.log("SHOULD EXPIRE!");
                     expireCookie("remember=matheus", 1);
                 }
                 addCookie(`user=${name}`);
@@ -250,8 +247,6 @@ function expireCookie(expression: string, seconds: number = 0) {
 
 function getCookie(cookieName: string) {
     const pattern = new RegExp(`(?<=${cookieName}=).*`, "gm");
-    console.log("pattern ::: ", pattern);
-    console.log("pattern match ::: ", document?.cookie?.match(pattern));
     return document?.cookie?.match(pattern)?.[0]?.split(";")?.[0];
 }
 
