@@ -1,8 +1,3 @@
-import { NextRouter, useRouter } from "next/router";
-import { FunctionComponent, useEffect, useState } from "react";
-import { FormButton } from "../formButton/buttonForm";
-import { Modal } from "../modal/modal";
-import { StyledForm } from "./loginForm.style";
 import {
     passwordInRange,
     passwordOnlyAllowedValues,
@@ -10,7 +5,12 @@ import {
     usernameOnlyAllowedValues,
     validatePassword,
     validateUserName,
-} from "./loginForm.utils";
+} from "@functions";
+import { NextRouter, useRouter } from "next/router";
+import { FunctionComponent, useEffect, useState } from "react";
+import { FormButton } from "../formButton/buttonForm";
+import { Modal } from "../modal/modal";
+import { StyledForm } from "./loginForm.style";
 
 type LoginFormProps = {
     title?: string;
@@ -218,12 +218,13 @@ function submitEvent(
                         ) as HTMLInputElement
                     )?.checked
                 ) {
-                    expireCookie("remember=noremember", 1);
+                    console.log("SHOULD EXPIRE!");
+                    expireCookie("remember=matheus", 1);
                 }
                 addCookie(`user=${name}`);
                 router.push("/choose-function");
             } else {
-                expireCookie("remember=noremember", 1);
+                expireCookie("remember=matheus", 1);
                 window.location.href = "/";
             }
         } else {
@@ -243,7 +244,7 @@ function addCookie(expression: string) {
 function expireCookie(expression: string, seconds: number = 0) {
     let d = new Date();
     d.setSeconds(d.getSeconds() + seconds);
-    if (!document?.cookie?.includes(expression))
+    if (document?.cookie?.includes(expression))
         document.cookie = `${expression}; expires=${d.toUTCString()}`;
 }
 
@@ -251,7 +252,7 @@ function getCookie(cookieName: string) {
     const pattern = new RegExp(`(?<=${cookieName}=).*`, "gm");
     console.log("pattern ::: ", pattern);
     console.log("pattern match ::: ", document?.cookie?.match(pattern));
-    return document?.cookie?.match(pattern)?.[0]?.replace(";", "");
+    return document?.cookie?.match(pattern)?.[0]?.split(";")?.[0];
 }
 
 export { LoginForm };

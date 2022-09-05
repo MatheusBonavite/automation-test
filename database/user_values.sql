@@ -1,6 +1,6 @@
 CREATE TABLE user_info (
     user_id SERIAL PRIMARY KEY,
-    user_name VARCHAR(10),
+    user_name VARCHAR(10) UNIQUE,
     user_password CHAR(6)
 );
 
