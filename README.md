@@ -46,6 +46,7 @@ The application will be running on your machine at port 3000 (so you also better
 
 # Test and Automation with Cypress 🧪
 
+## First Part
 Now that both the database and the Next.js applications are running, on ports 5432 and 3000 respectively, we can do our testing and automation with Cypress.
 
 To test the Next.js application, that mimics the software requirements specification (SRS) given in the PDF file, we must go inside website and open Cypress, just like:
@@ -71,9 +72,52 @@ To test such feature in Cypress what could've been done was:
 cy.wait(2000); //Amount of time in milliseconds
 cy.url().should('eq','https://localhost:3000/'); //Should go back, because it was idle for the amount of time in the wait.
 ```
-This part covers the first assignment given on the SRS.
+This part covers the first assignment given on the SRS. 
+
+Here is an example of the tests running:
 
 
+![Cypress running smooth, first part.](https://github.com/MatheusBonavite/automation-test/blob/main/gifs/ezgif-3-8f0511c064.gif)
 
+An alternative to the open command would be running 'npm run cypress:run', which will give you the output:
+
+```
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  choose-function-basic-functionality      00:15        5        5        -        -        - │
+  │    .cy.ts                                                                                      │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  form-submit-right.cy.ts                  00:18        6        6        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  form-submit-wrong.cy.ts                  00:05        6        6        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  loading-the-page.cy.ts                   787ms        2        2        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  test-text-input-wrong.cy.ts              00:07        9        9        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✖  list-users-add-user.cy.ts                00:09        3        2        1        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  list-users-basic-functionality.cy.t      00:04        3        3        -        -        - │
+  │    s                                                                                           │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  list-users-delete-user.cy.ts             00:01        1        1        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✖  1 of 8 failed (13%)                      01:03       35       34        1        -        -  
+```
+
+## Second Part
+
+For the second part things are a little bit easier (hoooray ✨).
+
+All you got to do is go to the blankfactor-automation folder, install the dependencies (such as Cypress itself) and then hit cypress:open. Then the steps are similar for the first part. The commands are:
+
+```bash
+cd blankfactor-automation
+npm i
+npm run cypress:open
+```
+There is only one automated test that will perform all that is required for the second part of the assignment. 
+
+An example of that part running: 
 
 
