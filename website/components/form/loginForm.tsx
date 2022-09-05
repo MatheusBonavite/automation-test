@@ -24,6 +24,8 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
     const [displayPasswordTip, setDisplayPasswordTip] = useState(false);
     const [modalOpen, setModalOpen] = useState("");
 
+    const [rememberUser, setRememberUser] = useState(false);
+
     useEffect(() => {
         if (username) {
             setDisplayUsernameTip(!validateUserName(username));
@@ -54,10 +56,17 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
         }
     }, [router]);
 
+    useEffect(() => {
+        if (document?.cookie && document?.cookie?.includes("remember=")) {
+            setRememberUser(true);
+        }
+    }, []);
     return (
         <StyledForm id="login-form" data-testid="login-form">
             <div className="title">{title}</div>
-            <div className="username-wrapper">
+            <div
+                className="username-wrapper"
+                style={{ display: `${rememberUser ? "none" : "block"}` }}>
                 <label htmlFor="login-form-username">User Name: </label>
                 <br />
                 <input
@@ -65,7 +74,7 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
                     name="login-form-username"
                     type="text"
                     data-testid="login-form-username"
-                    required
+                    required={!rememberUser}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 {displayUsernameTip && (
@@ -94,7 +103,10 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
                     </div>
                 )}
             </div>
-            <div className="password-wrapper">
+            <div
+                className="password-wrapper"
+                style={{ display: `${rememberUser ? "none" : "block"}` }}>
+                {/* style={{display: "none"}} */}
                 <label htmlFor="login-form-password">Password: </label>
                 <br />
                 <input
@@ -102,7 +114,7 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
                     name="login-form-password"
                     type="password"
                     data-testid="login-form-password"
-                    required
+                    required={!rememberUser}
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 {displayPasswordTip && (
@@ -132,6 +144,17 @@ const LoginForm: FunctionComponent<LoginFormProps> = ({ title = "Login" }) => {
                 )}
             </div>
             <FormButton />
+            <div>
+                <input
+                    id="remember-me"
+                    type="checkbox"
+                    name="remember-me"
+                    value="remember-me"
+                    data-testid="remember-me"
+                    style={{ width: "auto", cursor: "pointer" }}
+                />
+                <label htmlFor="remember-me">Remember me? </label>
+            </div>
             <Modal open={modalOpen} openStateHandler={setModalOpen} />
         </StyledForm>
     );
@@ -165,6 +188,16 @@ function submitEvent(
                 ) {
                     setModalOpen("Password does not match!");
                 } else {
+                    addCookie(`user=${data.user_name}`);
+                    if (
+                        (
+                            document?.getElementById(
+                                "remember-me"
+                            ) as HTMLInputElement
+                        )?.checked
+                    ) {
+                        addCookie(`remember=${data.user_name}`);
+                    }
                     router.push("/choose-function");
                 }
             })
@@ -173,8 +206,52 @@ function submitEvent(
                 console.log("err >>> ", err);
             });
     } else {
-        setModalOpen("Make input corrections, based on the tip!");
+        console.log("ahhh >>> ", document?.cookie);
+        if (document?.cookie && document?.cookie?.includes("remember=")) {
+            const name = getCookie("remember");
+            console.log("name >>> ", name);
+            if (name) {
+                if (
+                    !(
+                        document?.getElementById(
+                            "remember-me"
+                        ) as HTMLInputElement
+                    )?.checked
+                ) {
+                    expireCookie("remember=noremember", 1);
+                }
+                addCookie(`user=${name}`);
+                router.push("/choose-function");
+            } else {
+                expireCookie("remember=noremember", 1);
+                window.location.href = "/";
+            }
+        } else {
+            setModalOpen("Make input corrections, based on the tip!");
+        }
     }
+}
+
+function addCookie(expression: string) {
+    const PERSIST_IN_DAYS = 20 * 24 * 60;
+    let d = new Date();
+    d.setMinutes(d.getMinutes() + PERSIST_IN_DAYS);
+    if (!document?.cookie?.includes(expression))
+        document.cookie = `${expression}; expires=${d.toUTCString()}`;
+}
+
+function expireCookie(expression: string, seconds: number = 0) {
+    let d = new Date();
+    d.setSeconds(d.getSeconds() + seconds);
+    if (!document?.cookie?.includes(expression))
+        document.cookie = `${expression}; expires=${d.toUTCString()}`;
+}
+
+function getCookie(cookieName: string) {
+    const pattern = new RegExp(`(?<=${cookieName}=).*`, "gm");
+    console.log("pattern ::: ", pattern);
+    console.log("pattern match ::: ", document?.cookie?.match(pattern));
+    return document?.cookie?.match(pattern)?.[0]?.replace(";", "");
 }
 
 export { LoginForm };

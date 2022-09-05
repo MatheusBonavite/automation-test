@@ -1,9 +1,19 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { FormButton } from "../../components/formButton/buttonForm";
 
 const Home: NextPage = () => {
     const router = useRouter();
+
+    useEffect(() => {
+        if (document) {
+            if (!document?.cookie?.includes("user=")) {
+                router.push("/");
+            }
+        }
+    }, [router]);
+
     return (
         <div
             className="form-wrapper"
@@ -21,11 +31,20 @@ const Home: NextPage = () => {
             />
             <FormButton
                 title="Logout"
-                onClick={() => router.push("/")}
+                onClick={() => {
+                    expireCookie(`user=logout`);
+                    router.push("/");
+                }}
                 dataTestId="logout-from-choose-function"
             />
         </div>
     );
 };
+
+function expireCookie(expression: string) {
+    let d = new Date();
+    if (!document?.cookie?.includes(expression))
+        document.cookie = `${expression}; expires=${d.toUTCString()}`;
+}
 
 export default Home;
