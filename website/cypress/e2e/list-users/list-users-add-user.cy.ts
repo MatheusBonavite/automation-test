@@ -2,11 +2,13 @@
 
 describe("Enter /list-users route and add some user", () => {
     beforeEach(() => {
-        cy.visit("/list-users");
         cy.setCookie("user", "matheus");
+        cy.visit("/list-users");
     });
 
     it("Add new existing user", () => {
+        cy.getCookie("user").should("exist");
+        cy.url().should("eq", "http://localhost:3000/list-users");
         cy.get('[data-testid="add-user-button"]').click();
         cy.scrollTo("bottom", { duration: 1000, ensureScrollable: false });
         cy.get('[data-testid="add-username"]').type("casimiro");
