@@ -17,8 +17,13 @@ const Home: NextPage = () => {
             <FormButton
                 title="List Users"
                 onClick={() => router.push("/list-users")}
+                dataTestId="list-users-button"
             />
-            <FormButton title="Logout" onClick={() => router.push("/")} />
+            <FormButton
+                title="Logout"
+                onClick={() => router.push("/")}
+                dataTestId="logout-from-choose-function"
+            />
         </div>
     );
 };

@@ -157,9 +157,12 @@ function submitEvent(
         fetch(`http://localhost:3000/api/getUsers?name=${formname}`)
             .then((response) => response?.json() || "")
             .then((data) => {
-                if (!data || !data?.user_id) {
+                if (!data || !data?.user_id || data?.user_name !== formname) {
                     setModalOpen("User not found!");
-                } else if (data?.user_password !== formpassword) {
+                } else if (
+                    data?.user_id &&
+                    data?.user_password !== formpassword
+                ) {
                     setModalOpen("Password does not match!");
                 } else {
                     router.push("/choose-function");

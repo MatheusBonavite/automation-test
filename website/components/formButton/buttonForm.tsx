@@ -5,6 +5,7 @@ type FormButtonProps = {
     title?: string;
     type?: "submit" | "button" | "reset" | undefined;
     margin?: string;
+    dataTestId?: string;
     onClick?: () => void;
 };
 
@@ -12,12 +13,13 @@ const FormButton: FunctionComponent<FormButtonProps> = ({
     title = "Press me!",
     type = "submit",
     margin,
+    dataTestId = "login-form-button",
     onClick = () => {},
 }) => {
     return (
         <ButtonStyled
             type={type}
-            data-testid="login-form-button"
+            data-testid={dataTestId}
             onClick={onClick}
             margin={margin}>
             {title}

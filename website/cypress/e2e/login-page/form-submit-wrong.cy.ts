@@ -43,7 +43,22 @@ describe("Submit a form with the wrong information", () => {
     it("Submit user that is not on the database", () => {
         cy.get('[data-testid="login-form-username"]').type("mathias");
         cy.get('[data-testid="login-form-password"]').type("asdasd");
+        //On this case I don't want the database to influence my tests!
+        cy.intercept("/api/getUser?*", { fixture: "matheus" }).as(
+            "get-user-api"
+        );
         cy.get('[data-testid="login-form"]').submit();
         cy.contains("User not found!");
+    });
+
+    it("Submit user with incorrect password", () => {
+        cy.get('[data-testid="login-form-username"]').type("matheus");
+        cy.get('[data-testid="login-form-password"]').type("asdasd");
+        cy.get('[data-testid="login-form"]').submit();
+        //On this case I don't want the database to influence my tests!
+        cy.intercept("/api/getUser?*", { fixture: "matheus" }).as(
+            "get-user-api"
+        );
+        cy.contains("Password does not match!");
     });
 });
