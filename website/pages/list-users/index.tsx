@@ -1,3 +1,12 @@
+import {
+    passwordInRange,
+    passwordOnlyAllowedValues,
+    usernameInRange,
+    usernameOnlyAllowedValues,
+    validatePassword,
+    validateUserName,
+} from "@functions";
+import { Modal } from "components/modal/modal";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -13,6 +22,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [needToAdd, setneedToAdd] = useState(false);
+    const [modalOpen, setModalOpen] = useState("");
 
     useEffect(() => {
         if (document) {
@@ -21,7 +31,7 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
             }
         }
     }, [router]);
-    console.log(username, password);
+    console.log(username, password, usernameOnlyAllowedValues(username));
     return (
         <div
             className="form-wrapper"
@@ -92,6 +102,39 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
                         title="Add"
                         margin="0 0 0 1em"
                         dataTestId="add-user-button"
+                        onClick={async () => {
+                            if (
+                                validateUserName(username) &&
+                                validatePassword(password)
+                            ) {
+                                const existsOrNot = await fetch(
+                                    `http://localhost:3000/api/getUsers?name=${username}`
+                                )
+                                    .then((response) => response?.json() || "")
+                                    .then((data) => data);
+                                if (
+                                    existsOrNot?.user_id &&
+                                    existsOrNot?.user_name
+                                ) {
+                                    setModalOpen("User already exists!");
+                                } else {
+                                    fetch(
+                                        `http://localhost:3000/api/insertUser?name=${username}&password=${password}`
+                                    )
+                                        .then(
+                                            (response) => response?.json() || ""
+                                        )
+                                        .then((data) => {
+                                            if (data) {
+                                                window.location.href =
+                                                    "/list-users";
+                                            }
+                                        });
+                                }
+                            } else {
+                                setModalOpen("Check out the rules!");
+                            }
+                        }}
                     />
                 </div>
             </div>
@@ -103,12 +146,49 @@ const Home: NextPage<ListUsersPage> = ({ users }) => {
                 <span>Rules:</span>
                 <br />
                 <ul>
-                    <li>Username: Allowed values: A-Z, a-z, 0-9</li>
-                    <li>Username: Should have 5-10 characters</li>
-                    <li>Password: Allowed values: a-z</li>
-                    <li>Password: Should have 6 characters</li>
+                    <li
+                        style={{
+                            color: `${
+                                usernameOnlyAllowedValues(username)
+                                    ? "var(--success-color)"
+                                    : "var(--error-color)"
+                            }`,
+                        }}>
+                        Username: Allowed values: A-Z, a-z, 0-9
+                    </li>
+                    <li
+                        style={{
+                            color: `${
+                                usernameInRange(username)
+                                    ? "var(--success-color)"
+                                    : "var(--error-color)"
+                            }`,
+                        }}>
+                        Username: Should have 5-10 characters
+                    </li>
+                    <li
+                        style={{
+                            color: `${
+                                passwordOnlyAllowedValues(password)
+                                    ? "var(--success-color)"
+                                    : "var(--error-color)"
+                            }`,
+                        }}>
+                        Password: Allowed values: a-z
+                    </li>
+                    <li
+                        style={{
+                            color: `${
+                                passwordInRange(password)
+                                    ? "var(--success-color)"
+                                    : "var(--error-color)"
+                            }`,
+                        }}>
+                        Password: Should have 6 characters
+                    </li>
                 </ul>
             </div>
+            <Modal open={modalOpen} openStateHandler={setModalOpen} />
         </div>
     );
 };
