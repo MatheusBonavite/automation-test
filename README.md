@@ -123,9 +123,13 @@ An example of that part running:
 ![Cypress running smooth, second part.](https://github.com/MatheusBonavite/automation-test/blob/main/gifs/ezgif-2-f0cf720e7e.gif)
 
 Also, you can run that automation with cypress:run to check if everything went well:
+
+
+```
        Spec                                              Tests  Passing  Failing  Pending  Skipped  
   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
   │ ✔  website-automation.cy.js                 00:29        1        1        -        -        - │
   └────────────────────────────────────────────────────────────────────────────────────────────────┘
     ✔  All specs passed!                        00:29        1        1        -        -        -  
+```
 
